@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  imagem-test-pdi-poc-network:
+    build: .
+    ports:
+      - "3000:3000"
+    networks:
+      poc-pdi-network:
+        aliases:
+          - app
+    command: node --watch index.js
+
+  db:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      poc-pdi-network:
+        aliases:
+          - db
+
+networks:
+  poc-pdi-network:
+    driver: bridge
